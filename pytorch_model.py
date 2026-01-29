@@ -262,17 +262,17 @@ def log_mlflow_artifact(path, artifact_path=None, mlflow_enabled=False):
 class SirenActivation(nn.Module):
     def __init__(self, n):
         super().__init__()
-        self.omega = nn.Parameter(torch.randn(n) + 1)
+        self.omega = nn.Parameter(10 * (torch.randn(1) + 1))
 
     def forward(self, x):
         return torch.sin(self.omega * x)
 
 
 class SirenNN(nn.Module):
-    def __init__(self, hidden_size=32):
+    def __init__(self, hidden_size=512, n_hidden_layers=6):
         super().__init__()
         layers = [nn.Linear(6, hidden_size)]
-        for _i in range(3):
+        for _i in range(n_hidden_layers - 1):
             layers.append(SirenActivation(hidden_size))
             layers.append(nn.Linear(hidden_size, hidden_size))
         layers.append(SirenActivation(hidden_size))
@@ -341,9 +341,9 @@ if __name__ == "__main__":
         # For siren model: 5e-5 only gets to 1e-5 loss
         # With converted units: 6e-4/0.6/5 starts decent and doesn't change
         # 5e-5/0.5/5 doesn't change much
-        learning_rate = 5e-6
+        learning_rate = 2e-5
         optimizer = torch.optim.SGD(siren_model.parameters(), lr=learning_rate)
-        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.5)
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.75)
         _LOGGER.info("Learning rate: %.1e\nScheduler: %s", learning_rate, scheduler)
 
         _LOGGER.info("Model defined, starting training\n%s\n", siren_model)

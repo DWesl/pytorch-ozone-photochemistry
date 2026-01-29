@@ -43,4 +43,4 @@ command time -v srun --ntasks-per-node=${SLURM_NTASKS_PER_NODE} --mpi=none \
 	mamba run -p /scratch3/NCEPDEV/global/${USER}/AIML/conda/env \
 	torchrun --nnodes=${SLURM_NNODES} --node-rank=${SLURM_NODEID} \
 	--nproc_per_node=2 \
-	pytorch_model.py
+	pytorch-ozone-photochemistry/pytorch_model.py
